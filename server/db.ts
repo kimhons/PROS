@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, jobs, applications, contacts, InsertJob, InsertApplication, InsertContact } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,99 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Job-related queries
+export async function getAllActiveJobs() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(jobs).where(eq(jobs.isActive, 1)).orderBy(desc(jobs.postedDate));
+}
+
+export async function getJobById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(jobs).where(eq(jobs.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createJob(job: InsertJob) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(jobs).values(job);
+  return result;
+}
+
+export async function updateJob(id: number, updates: Partial<InsertJob>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(jobs).set(updates).where(eq(jobs.id, id));
+}
+
+export async function deleteJob(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Soft delete by setting isActive to 0
+  await db.update(jobs).set({ isActive: 0 }).where(eq(jobs.id, id));
+}
+
+// Application-related queries
+export async function createApplication(application: InsertApplication) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(applications).values(application);
+  return result;
+}
+
+export async function getApplicationsByJobId(jobId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(applications).where(eq(applications.jobId, jobId)).orderBy(desc(applications.submittedAt));
+}
+
+export async function getAllApplications() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(applications).orderBy(desc(applications.submittedAt));
+}
+
+export async function updateApplicationStatus(id: number, status: "new" | "reviewing" | "interview" | "offer" | "rejected" | "hired", notes?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const updates: any = { status };
+  if (notes !== undefined) {
+    updates.notes = notes;
+  }
+  
+  await db.update(applications).set(updates).where(eq(applications.id, id));
+}
+
+// Contact-related queries
+export async function createContact(contact: InsertContact) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(contacts).values(contact);
+  return result;
+}
+
+export async function getAllContacts() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(contacts).orderBy(desc(contacts.submittedAt));
+}
+
+export async function updateContactStatus(id: number, status: "new" | "contacted" | "resolved") {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(contacts).set({ status }).where(eq(contacts.id, id));
+}
