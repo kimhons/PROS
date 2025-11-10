@@ -9,6 +9,7 @@ import Careers from "./pages/Careers";
 import Services from "./pages/Services";
 import About from "./pages/About";
 import Government from "./pages/Government";
+import Newsletter from "./pages/Newsletter";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -18,6 +19,7 @@ function Router() {
       <Route path={"/about"} component={About} />
       <Route path={"/services"} component={Services} />
       <Route path={"/government"} component={Government} />
+      <Route path={"/newsletter"} component={Newsletter} />
       <Route path={"/careers"} component={Careers} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

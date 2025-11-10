@@ -202,6 +202,45 @@ export const appRouter = router({
         return { success: true };
       }),
   }),
+
+  newsletter: router({
+    // Public: Get all published newsletter issues
+    listIssues: publicProcedure.query(async () => {
+      return await db.getAllPublishedNewsletterIssues();
+    }),
+
+    // Public: Get single newsletter issue with articles
+    getIssue: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const issue = await db.getNewsletterIssueById(input.id);
+        if (!issue) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Newsletter issue not found' });
+        }
+        const articles = await db.getNewsletterArticlesByIssueId(input.id);
+        return { issue, articles };
+      }),
+
+    // Public: Subscribe to newsletter
+    subscribe: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+        organization: z.string().optional(),
+        jobTitle: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        await db.createNewsletterSubscriber(
+          input.email,
+          input.firstName,
+          input.lastName,
+          input.organization,
+          input.jobTitle
+        );
+        return { success: true };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

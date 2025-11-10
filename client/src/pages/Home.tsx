@@ -52,8 +52,11 @@ export default function Home() {
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
               Elite Radiation Oncology Staffing & AI Solutions
             </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed">
-              Empowering VA and DoD healthcare facilities with specialized professionals and transformative AI-driven technologies for precision cancer care.
+            <p className="text-lg opacity-80 mb-2 font-semibold tracking-wide">
+              Elite Talent. Intelligent Systems. Exceptional Care.
+            </p>
+            <p className="text-xl opacity-90 mb-8">
+              Empowering VA, DoD, and civilian healthcare facilities with specialized professionals and transformative AI-driven technologies for precision cancer care.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/services">
@@ -107,7 +110,7 @@ export default function Home() {
                 <Shield className="h-12 w-12 text-primary mb-4" />
                 <CardTitle>Veteran-Owned</CardTitle>
                 <CardDescription>
-                  VOSB certified with deep understanding of military and VA healthcare systems. Committed to serving those who served.
+                  VOSB certified with deep understanding of government and civilian healthcare systems. Serving VA, DoD, academic medical centers, and community hospitals nationwide.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -204,12 +207,42 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Newsletter Signup Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-4">Stay Informed with Our Newsletter</h2>
+            <p className="text-xl text-muted-foreground mb-8">
+              Biweekly insights on radiation oncology: latest news, best practices, cutting-edge research, and clinical recommendations from industry experts.
+            </p>
+            <Card className="border-2">
+              <CardContent className="pt-6">
+                <form className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="email"
+                    placeholder="Enter your email address"
+                    className="flex-1 px-4 py-3 rounded-md border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    required
+                  />
+                  <Button size="lg" type="submit" className="px-8">
+                    Subscribe
+                  </Button>
+                </form>
+                <p className="text-sm text-muted-foreground mt-4">
+                  Join 5,000+ radiation oncology professionals receiving expert insights every two weeks.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-16 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">Ready to Partner with PROS?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Whether you're a government facility seeking elite staffing and technology solutions, or a healthcare professional looking for your next opportunity, we're here to help.
+            Whether you're a VA facility, DoD hospital, academic medical center, or community hospital seeking elite staffing and technology solutions—or a healthcare professional looking for your next opportunity—we're here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact">
@@ -233,7 +266,7 @@ export default function Home() {
             <div>
               <h3 className="font-bold text-lg mb-4">About PROS</h3>
               <p className="text-sm opacity-80">
-                Veteran-owned staffing company specializing in radiation oncology professionals and AI-powered systems for VA and DoD healthcare facilities.
+                Veteran-owned staffing company specializing in radiation oncology professionals and AI-powered systems for VA, DoD, and civilian healthcare facilities nationwide.
               </p>
             </div>
             <div>

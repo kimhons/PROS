@@ -41,3 +41,23 @@
 - [x] Update organizational documentation with detailed service descriptions (300 char limit)
 - [x] Create comprehensive Services page with all five service categories
 - [x] Add detailed mission statement to About page
+
+## Newsletter & Market Expansion
+- [ ] Update all pages to include civilian hospitals (academic medical centers, community hospitals, private practices)
+- [ ] Create newsletter database schema (issues, articles, subscribers)
+- [ ] Build newsletter archive page with issue listings
+- [ ] Create individual newsletter issue page with article layout
+- [ ] Add newsletter signup form to homepage
+- [ ] Create admin interface for publishing newsletters
+- [ ] Add newsletter subscription management
+- [ ] Add tagline "Elite Talent. Intelligent Systems. Exceptional Care." throughout website
+
+## Radiation Oncology Web Apps (Lead Magnets - Authentication Required)
+- [ ] Create "Tools" landing page showcasing all five apps
+- [ ] Build Staffing Calculator (ASTRO/AAPM guidelines) with FTE calculations
+- [ ] Build comprehensive BED Calculator with tissue presets
+- [ ] Build Protocol Library with searchable database and PDF downloads
+- [ ] Build QA Checklist Generator (AAPM/ASTRO/MPPG based)
+- [ ] Build Resource Aggregator with curated links and categories
+- [ ] Enhance user registration to capture credentials and organization
+- [ ] Add app usage tracking for lead scoring

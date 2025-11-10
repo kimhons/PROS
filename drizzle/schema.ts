@@ -92,3 +92,59 @@ export const contacts = mysqlTable("contacts", {
 
 export type Contact = typeof contacts.$inferSelect;
 export type InsertContact = typeof contacts.$inferInsert;
+
+/**
+ * Newsletter issues published biweekly
+ */
+export const newsletterIssues = mysqlTable("newsletterIssues", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  issueNumber: int("issueNumber").notNull().unique(), // Sequential issue number
+  publishDate: timestamp("publishDate").notNull(),
+  description: text("description"), // Brief summary of the issue
+  coverImageUrl: varchar("coverImageUrl", { length: 500 }),
+  isPublished: int("isPublished").default(0).notNull(), // 1 = published, 0 = draft
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type NewsletterIssue = typeof newsletterIssues.$inferSelect;
+export type InsertNewsletterIssue = typeof newsletterIssues.$inferInsert;
+
+/**
+ * Individual articles within newsletter issues
+ */
+export const newsletterArticles = mysqlTable("newsletterArticles", {
+  id: int("id").autoincrement().primaryKey(),
+  issueId: int("issueId").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  category: mysqlEnum("category", ["latest-news", "best-practices", "research", "clinical-recommendations", "technology", "case-studies", "industry-updates"]).notNull(),
+  author: varchar("author", { length: 200 }),
+  content: text("content").notNull(), // Markdown content
+  excerpt: text("excerpt"), // Short summary for listings
+  imageUrl: varchar("imageUrl", { length: 500 }),
+  orderIndex: int("orderIndex").default(0).notNull(), // Display order within issue
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type NewsletterArticle = typeof newsletterArticles.$inferSelect;
+export type InsertNewsletterArticle = typeof newsletterArticles.$inferInsert;
+
+/**
+ * Newsletter subscribers
+ */
+export const newsletterSubscribers = mysqlTable("newsletterSubscribers", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  firstName: varchar("firstName", { length: 100 }),
+  lastName: varchar("lastName", { length: 100 }),
+  organization: varchar("organization", { length: 255 }),
+  jobTitle: varchar("jobTitle", { length: 200 }),
+  isActive: int("isActive").default(1).notNull(), // 1 = subscribed, 0 = unsubscribed
+  subscribedAt: timestamp("subscribedAt").defaultNow().notNull(),
+  unsubscribedAt: timestamp("unsubscribedAt"),
+});
+
+export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
+export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert;

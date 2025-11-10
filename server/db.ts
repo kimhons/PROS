@@ -185,3 +185,52 @@ export async function updateContactStatus(id: number, status: "new" | "contacted
   
   await db.update(contacts).set({ status }).where(eq(contacts.id, id));
 }
+
+
+// Newsletter-related queries
+export async function getAllPublishedNewsletterIssues() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const { newsletterIssues } = await import("../drizzle/schema");
+  return await db.select().from(newsletterIssues).where(eq(newsletterIssues.isPublished, 1)).orderBy(desc(newsletterIssues.publishDate));
+}
+
+export async function getNewsletterIssueById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const { newsletterIssues } = await import("../drizzle/schema");
+  const result = await db.select().from(newsletterIssues).where(eq(newsletterIssues.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getNewsletterArticlesByIssueId(issueId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const { newsletterArticles } = await import("../drizzle/schema");
+  const { asc } = await import("drizzle-orm");
+  return await db.select().from(newsletterArticles).where(eq(newsletterArticles.issueId, issueId)).orderBy(asc(newsletterArticles.orderIndex));
+}
+
+export async function createNewsletterSubscriber(email: string, firstName?: string, lastName?: string, organization?: string, jobTitle?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const { newsletterSubscribers } = await import("../drizzle/schema");
+  
+  const subscriber = {
+    email,
+    firstName,
+    lastName,
+    organization,
+    jobTitle,
+  };
+  
+  const result = await db.insert(newsletterSubscribers).values(subscriber).onDuplicateKeyUpdate({
+    set: { isActive: 1, subscribedAt: new Date() },
+  });
+  
+  return result;
+}
