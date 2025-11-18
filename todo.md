@@ -53,8 +53,8 @@
 - [ ] Add tagline "Elite Talent. Intelligent Systems. Exceptional Care." throughout website
 
 ## Radiation Oncology Web Apps (Lead Magnets - Authentication Required)
-- [ ] Create "Tools" landing page showcasing all five apps
-- [ ] Build Staffing Calculator (ASTRO/AAPM guidelines) with FTE calculations
+- [x] Create "Tools" landing page showcasing all five apps
+- [x] Build Staffing Calculator (ASTRO/AAPM guidelines) with FTE calculations
 - [ ] Build comprehensive BED Calculator with tissue presets
 - [ ] Build Protocol Library with searchable database and PDF downloads
 - [ ] Build QA Checklist Generator (AAPM/ASTRO/MPPG based)

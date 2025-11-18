@@ -17,6 +17,12 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  // Professional information for lead capture
+  organization: varchar("organization", { length: 255 }),
+  jobTitle: varchar("jobTitle", { length: 200 }),
+  credentials: varchar("credentials", { length: 200 }), // e.g., "ABR, DABR, MS"
+  specialty: varchar("specialty", { length: 100 }), // e.g., "Medical Physics", "Radiation Therapy"
+  yearsExperience: int("yearsExperience"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),

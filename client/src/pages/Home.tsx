@@ -30,6 +30,12 @@ export default function Home() {
               <Link href="/government">
                 <span className="hover:text-secondary transition-colors cursor-pointer">Government Contracting</span>
               </Link>
+              <Link href="/newsletter">
+                <span className="hover:text-secondary transition-colors cursor-pointer">Newsletter</span>
+              </Link>
+              <Link href="/tools">
+                <span className="hover:text-secondary transition-colors cursor-pointer">Tools</span>
+              </Link>
               <Link href="/careers">
                 <span className="hover:text-secondary transition-colors cursor-pointer">Careers</span>
               </Link>
@@ -275,6 +281,8 @@ export default function Home() {
                 <li><Link href="/about"><span className="hover:text-secondary transition-colors cursor-pointer">About Us</span></Link></li>
                 <li><Link href="/services"><span className="hover:text-secondary transition-colors cursor-pointer">Services</span></Link></li>
                 <li><Link href="/government"><span className="hover:text-secondary transition-colors cursor-pointer">Government Contracting</span></Link></li>
+                <li><Link href="/newsletter"><span className="hover:text-secondary transition-colors cursor-pointer">Newsletter</span></Link></li>
+                <li><Link href="/tools"><span className="hover:text-secondary transition-colors cursor-pointer">Tools</span></Link></li>
                 <li><Link href="/careers"><span className="hover:text-secondary transition-colors cursor-pointer">Careers</span></Link></li>
               </ul>
             </div>

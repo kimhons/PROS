@@ -22,6 +22,13 @@
       "when": 1762758066366,
       "tag": "0002_goofy_sue_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1763447389334,
+      "tag": "0003_volatile_vertigo",
+      "breakpoints": true
     }
   ]
 }
