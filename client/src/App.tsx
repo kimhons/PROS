@@ -12,6 +12,7 @@ import Government from "./pages/Government";
 import Newsletter from "./pages/Newsletter";
 import StaffingCalculator from "./pages/StaffingCalculator";
 import Tools from "./pages/Tools";
+import BEDCalculator from "./pages/BEDCalculator";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -24,6 +25,7 @@ function Router() {
       <Route path={"/newsletter"} component={Newsletter} />
       <Route path={"/tools"} component={Tools} />
       <Route path={"/tools/staffing-calculator"} component={StaffingCalculator} />
+      <Route path={"/tools/bed-calculator"} component={BEDCalculator} />
       <Route path={"/careers"} component={Careers} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

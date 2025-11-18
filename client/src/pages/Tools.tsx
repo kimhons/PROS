@@ -27,7 +27,7 @@ export default function Tools() {
       description: "Comprehensive Biologically Effective Dose calculator with tissue-specific presets and fractionation schemes.",
       icon: Zap,
       href: "/tools/bed-calculator",
-      status: "coming-soon",
+      status: "available",
       features: [
         "α/β ratio presets for common tissues",
         "Multiple fractionation schemes",

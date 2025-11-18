@@ -55,7 +55,7 @@
 ## Radiation Oncology Web Apps (Lead Magnets - Authentication Required)
 - [x] Create "Tools" landing page showcasing all five apps
 - [x] Build Staffing Calculator (ASTRO/AAPM guidelines) with FTE calculations
-- [ ] Build comprehensive BED Calculator with tissue presets
+- [x] Build comprehensive BED Calculator with tissue presets
 - [ ] Build Protocol Library with searchable database and PDF downloads
 - [ ] Build QA Checklist Generator (AAPM/ASTRO/MPPG based)
 - [ ] Build Resource Aggregator with curated links and categories
