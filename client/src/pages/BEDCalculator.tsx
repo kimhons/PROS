@@ -10,6 +10,56 @@ import { Link } from "wouter";
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
 
+// Standard fractionation schedules by disease site
+const standardSchedules: Record<string, Array<{name: string, dose: number, fractions: number, description: string}>> = {
+  prostate: [
+    { name: "Conventional", dose: 78, fractions: 39, description: "Standard 2 Gy fractionation" },
+    { name: "Moderate Hypo", dose: 60, fractions: 20, description: "3 Gy per fraction" },
+    { name: "Ultra Hypo", dose: 40, fractions: 5, description: "SBRT/SABR regimen" },
+  ],
+  breast: [
+    { name: "Conventional", dose: 50, fractions: 25, description: "Standard whole breast" },
+    { name: "Hypofractionated", dose: 42.5, fractions: 16, description: "UK START regimen" },
+    { name: "Ultra Hypo", dose: 26, fractions: 5, description: "FAST-Forward trial" },
+  ],
+  "lung-nsclc": [
+    { name: "Conventional", dose: 60, fractions: 30, description: "Standard definitive RT" },
+    { name: "Dose Escalation", dose: 70, fractions: 35, description: "Higher dose regimen" },
+    { name: "SBRT", dose: 54, fractions: 3, description: "18 Gy × 3 for early stage" },
+  ],
+  "head-neck": [
+    { name: "Conventional", dose: 70, fractions: 35, description: "Standard definitive RT" },
+    { name: "Accelerated", dose: 70, fractions: 35, description: "6 fractions/week" },
+    { name: "Postoperative", dose: 60, fractions: 30, description: "Adjuvant RT" },
+  ],
+  "brain-glioblastoma": [
+    { name: "Standard", dose: 60, fractions: 30, description: "Stupp protocol" },
+    { name: "Hypofractionated", dose: 40, fractions: 15, description: "Elderly/poor PS" },
+  ],
+  "brain-metastases": [
+    { name: "SRS Single", dose: 20, fractions: 1, description: "Single fraction SRS" },
+    { name: "SRS 3-fraction", dose: 27, fractions: 3, description: "Fractionated SRS" },
+    { name: "SRS 5-fraction", dose: 30, fractions: 5, description: "Larger lesions" },
+  ],
+  rectum: [
+    { name: "Long Course", dose: 50.4, fractions: 28, description: "Standard neoadjuvant" },
+    { name: "Short Course", dose: 25, fractions: 5, description: "5 Gy × 5 Dutch trial" },
+  ],
+  liver: [
+    { name: "SBRT 3-fx", dose: 45, fractions: 3, description: "15 Gy × 3" },
+    { name: "SBRT 5-fx", dose: 50, fractions: 5, description: "10 Gy × 5" },
+  ],
+  pancreas: [
+    { name: "Conventional", dose: 50.4, fractions: 28, description: "Standard definitive" },
+    { name: "SBRT", dose: 33, fractions: 5, description: "6.6 Gy × 5" },
+  ],
+  "spine-met": [
+    { name: "Single Fraction", dose: 8, fractions: 1, description: "Palliative single" },
+    { name: "Hypofractionated", dose: 20, fractions: 5, description: "4 Gy × 5" },
+    { name: "SBRT", dose: 24, fractions: 2, description: "12 Gy × 2" },
+  ],
+};
+
 // Tissue/tumor type presets with α/β ratios
 const tissuePresets = [
   { value: "prostate", label: "Prostate Cancer", alphaβ: 1.5, description: "Low α/β - responds well to hypofractionation" },
@@ -42,6 +92,7 @@ export default function BEDCalculator() {
   const [showComparison, setShowComparison] = useState(false);
   const [comparisonDose, setComparisonDose] = useState(60);
   const [comparisonFractions, setComparisonFractions] = useState(20);
+  const [showStandardComparison, setShowStandardComparison] = useState(true);
 
   const currentPreset = tissuePresets.find(p => p.value === selectedPreset) || tissuePresets[0];
   const alphaβ = selectedPreset === "custom" ? customAlphaβ : currentPreset.alphaβ;
@@ -361,9 +412,89 @@ For more information, visit: https://pros-staffing.com
                   </CardContent>
                 </Card>
 
+                {/* Standard Schedule Comparison */}
+                {standardSchedules[selectedPreset] && showStandardComparison && (
+                  <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">Standard Regimens</CardTitle>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => setShowStandardComparison(false)}
+                        >
+                          Hide
+                        </Button>
+                      </div>
+                      <CardDescription>
+                        Compare against commonly used schedules for {currentPreset.label}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {standardSchedules[selectedPreset].map((schedule, idx) => {
+                        const schedDosePerFx = schedule.dose / schedule.fractions;
+                        const schedBed = schedule.fractions * schedDosePerFx * (1 + schedDosePerFx / alphaβ);
+                        const schedEqd2 = schedBed / (1 + 2 / alphaβ);
+                        const bedDiff = bed - schedBed;
+                        const isEquivalent = Math.abs(bedDiff) < 5;
+                        
+                        return (
+                          <div key={idx} className="p-3 bg-white dark:bg-slate-900 rounded-lg border">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h4 className="font-semibold text-sm">{schedule.name}</h4>
+                                <p className="text-xs text-muted-foreground">{schedule.description}</p>
+                              </div>
+                              <Badge variant={isEquivalent ? "default" : "secondary"} className="text-xs">
+                                {isEquivalent ? "Similar" : bedDiff > 0 ? "Lower" : "Higher"}
+                              </Badge>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2 text-xs">
+                              <div>
+                                <p className="text-muted-foreground">Dose</p>
+                                <p className="font-medium">{schedule.dose} Gy/{schedule.fractions}fx</p>
+                              </div>
+                              <div>
+                                <p className="text-muted-foreground">BED</p>
+                                <p className="font-medium">{schedBed.toFixed(1)} Gy</p>
+                              </div>
+                              <div>
+                                <p className="text-muted-foreground">EQD2</p>
+                                <p className="font-medium">{schedEqd2.toFixed(1)} Gy</p>
+                              </div>
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full mt-2 text-xs h-7"
+                              onClick={() => {
+                                setComparisonDose(schedule.dose);
+                                setComparisonFractions(schedule.fractions);
+                                setShowComparison(true);
+                              }}
+                            >
+                              Compare in Detail
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {!showStandardComparison && standardSchedules[selectedPreset] && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowStandardComparison(true)}
+                    className="w-full"
+                  >
+                    Show Standard Regimens
+                  </Button>
+                )}
+
                 <Card className="bg-primary/5 border-primary/20">
                   <CardHeader>
-                    <CardTitle className="text-lg">Compare Fractionation Schemes</CardTitle>
+                    <CardTitle className="text-lg">Custom Comparison</CardTitle>
                   </CardHeader>
                   <CardContent>
                     {!showComparison ? (
