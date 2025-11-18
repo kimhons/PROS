@@ -67,3 +67,4 @@
 - [x] Build QA Checklist Generator with TG-142, TG-51, and TG-100 templates
 - [x] Build Resource Aggregator with curated links to journals, conferences, guidelines, and professional development resources
 - [x] Create Contact page with multi-purpose inquiry form (staffing, consultations, partnerships)
+- [x] Build job detail page with application form and resume upload to S3
