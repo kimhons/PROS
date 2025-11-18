@@ -18,6 +18,7 @@ import QAChecklistGenerator from "./pages/QAChecklistGenerator";
 import ResourceAggregator from "./pages/ResourceAggregator";
 import Contact from "./pages/Contact";
 import JobDetail from "./pages/JobDetail";
+import AdminDashboard from "./pages/admin/Dashboard";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -36,6 +37,7 @@ function Router() {
       <Route path={"/tools/resources"} component={ResourceAggregator} />
       <Route path={"/careers"} component={Careers} />
       <Route path={"/careers/:id"} component={JobDetail} />
+      <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/contact"} component={Contact} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

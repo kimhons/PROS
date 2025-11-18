@@ -5,6 +5,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
 import { storagePut } from "./storage";
+import * as ai from "./_core/ai";
 import { TRPCError } from "@trpc/server";
 
 // Admin-only procedure
@@ -340,6 +341,73 @@ export const appRouter = router({
           input.jobTitle
         );
         return { success: true };
+      }),
+  }),
+
+  admin: router({
+    // Get dashboard statistics
+    getStats: adminProcedure.query(async () => {
+      const activeJobs = await db.countActiveJobs();
+      const pendingApplications = await db.countPendingApplications();
+      const unreadContacts = await db.countUnreadContacts();
+      const newsletterSubscribers = await db.countNewsletterSubscribers();
+      
+      return {
+        activeJobs,
+        pendingApplications,
+        unreadContacts,
+        newsletterSubscribers,
+        recentActivity: [],
+      };
+    }),
+
+    // AI: Generate job description
+    generateJobDescription: adminProcedure
+      .input(z.object({
+        title: z.string(),
+        department: z.string(),
+        location: z.string(),
+        clearance: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return await ai.generateJobDescription(input);
+      }),
+
+    // AI: Analyze resume
+    analyzeResume: adminProcedure
+      .input(z.object({
+        resumeText: z.string(),
+        jobDescription: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        return await ai.analyzeResume(input.resumeText, input.jobDescription);
+      }),
+
+    // AI: Generate contact response
+    generateContactResponse: adminProcedure
+      .input(z.object({
+        type: z.string(),
+        name: z.string(),
+        organization: z.string().optional(),
+        message: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        return await ai.generateContactResponse(input);
+      }),
+  }),
+
+  // AI Chat Assistant (public)
+  chat: router({
+    send: publicProcedure
+      .input(z.object({
+        message: z.string(),
+        history: z.array(z.object({
+          role: z.enum(['system', 'user', 'assistant']),
+          content: z.string(),
+        })).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return await ai.chatAssistant(input.message, input.history);
       }),
   }),
 });

@@ -1,4 +1,4 @@
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users, jobs, applications, contacts, InsertJob, InsertApplication, InsertContact, protocols, protocolFavorites, InsertProtocol, InsertProtocolFavorite } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -347,4 +347,53 @@ export async function isProtocolFavorited(userId: number, protocolId: number): P
     .limit(1);
   
   return result.length > 0;
+}
+
+// ============================================================================
+// Admin Statistics Functions
+// ============================================================================
+
+export async function countActiveJobs(): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  
+  const result = await db.select({ count: sql<number>`count(*)` })
+    .from(jobs)
+    .where(eq(jobs.isActive, 1));
+  
+  return result[0]?.count ?? 0;
+}
+
+export async function countPendingApplications(): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  
+  const result = await db.select({ count: sql<number>`count(*)` })
+    .from(applications)
+    .where(eq(applications.status, 'new'));
+  
+  return result[0]?.count ?? 0;
+}
+
+export async function countUnreadContacts(): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  
+  const result = await db.select({ count: sql<number>`count(*)` })
+    .from(contacts)
+    .where(eq(contacts.status, 'new'));
+  
+  return result[0]?.count ?? 0;
+}
+
+export async function countNewsletterSubscribers(): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  
+  const { newsletterSubscribers } = await import("../drizzle/schema");
+  const result = await db.select({ count: sql<number>`count(*)` })
+    .from(newsletterSubscribers)
+    .where(eq(newsletterSubscribers.isActive, 1));
+  
+  return result[0]?.count ?? 0;
 }

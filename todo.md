@@ -68,3 +68,8 @@
 - [x] Build Resource Aggregator with curated links to journals, conferences, guidelines, and professional development resources
 - [x] Create Contact page with multi-purpose inquiry form (staffing, consultations, partnerships)
 - [x] Build job detail page with application form and resume upload to S3
+- [x] Build admin dashboard with job management, application tracking, and contact form management
+- [x] Integrate aimlapi.com for AI-powered features
+- [ ] Build AI chat assistant widget for website navigation and support
+- [x] Implement AI resume analysis and job matching
+- [x] Add AI-assisted content generation for admin dashboard
