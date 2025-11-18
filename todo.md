@@ -64,3 +64,4 @@
 - [x] Add PDF export feature to BED Calculator for clinical documentation
 - [x] Add standard fractionation schedule comparison feature to BED Calculator
 - [x] Build Protocol Library with searchable database, filters, and PDF export
+- [x] Build QA Checklist Generator with TG-142, TG-51, and TG-100 templates

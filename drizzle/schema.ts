@@ -194,3 +194,49 @@ export const protocolFavorites = mysqlTable("protocolFavorites", {
 
 export type ProtocolFavorite = typeof protocolFavorites.$inferSelect;
 export type InsertProtocolFavorite = typeof protocolFavorites.$inferInsert;
+
+/**
+ * QA checklist templates table
+ */
+export const qaTemplates = mysqlTable("qaTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  category: mysqlEnum("category", ["machine-qa", "reference-dosimetry", "quality-management", "patient-specific-qa", "custom"]).notNull(),
+  tgReport: varchar("tgReport", { length: 50 }), // e.g., "TG-142", "TG-51", "TG-100"
+  frequency: mysqlEnum("frequency", ["daily", "weekly", "monthly", "quarterly", "annual", "as-needed"]),
+  equipmentType: varchar("equipmentType", { length: 100 }), // e.g., "Linear Accelerator", "CT Simulator", "Treatment Planning System"
+  manufacturer: varchar("manufacturer", { length: 100 }), // e.g., "Varian", "Elekta", "Accuray"
+  description: text("description"),
+  checklistItems: text("checklistItems").notNull(), // JSON array of checklist items
+  tolerances: text("tolerances"), // JSON object of tolerance specifications
+  references: text("references"), // Citations to TG reports, guidelines
+  isActive: int("isActive").default(1).notNull(),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type QATemplate = typeof qaTemplates.$inferSelect;
+export type InsertQATemplate = typeof qaTemplates.$inferInsert;
+
+/**
+ * User-generated QA checklists (instances of templates)
+ */
+export const qaChecklists = mysqlTable("qaChecklists", {
+  id: int("id").autoincrement().primaryKey(),
+  templateId: int("templateId"), // null if custom checklist
+  userId: int("userId").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  equipmentId: varchar("equipmentId", { length: 100 }), // e.g., "Linac 1", "TrueBeam STx"
+  performedDate: timestamp("performedDate"),
+  performedBy: varchar("performedBy", { length: 255 }),
+  reviewedBy: varchar("reviewedBy", { length: 255 }),
+  checklistData: text("checklistData").notNull(), // JSON of completed checklist with results
+  notes: text("notes"),
+  status: mysqlEnum("status", ["draft", "completed", "reviewed", "archived"]).default("draft").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type QAChecklist = typeof qaChecklists.$inferSelect;
+export type InsertQAChecklist = typeof qaChecklists.$inferInsert;

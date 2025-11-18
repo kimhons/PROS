@@ -53,7 +53,7 @@ export default function Tools() {
       description: "Generate customized quality assurance checklists based on AAPM TG reports, ASTRO guidelines, and MPPG recommendations.",
       icon: CheckSquare,
       href: "/tools/qa-checklist",
-      status: "coming-soon",
+      status: "available",
       features: [
         "Machine QA checklists",
         "Patient-specific QA workflows",
