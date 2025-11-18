@@ -10,9 +10,10 @@ import Services from "./pages/Services";
 import About from "./pages/About";
 import Government from "./pages/Government";
 import Newsletter from "./pages/Newsletter";
-import StaffingCalculator from "./pages/StaffingCalculator";
 import Tools from "./pages/Tools";
+import StaffingCalculator from "./pages/StaffingCalculator";
 import BEDCalculator from "./pages/BEDCalculator";
+import ProtocolLibrary from "./pages/ProtocolLibrary";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -26,6 +27,7 @@ function Router() {
       <Route path={"/tools"} component={Tools} />
       <Route path={"/tools/staffing-calculator"} component={StaffingCalculator} />
       <Route path={"/tools/bed-calculator"} component={BEDCalculator} />
+      <Route path={"/tools/protocol-library"} component={ProtocolLibrary} />
       <Route path={"/careers"} component={Careers} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

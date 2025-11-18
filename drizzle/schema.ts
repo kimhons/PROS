@@ -154,3 +154,43 @@ export const newsletterSubscribers = mysqlTable("newsletterSubscribers", {
 
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert;
+
+/**
+ * Treatment protocols table for protocol library
+ */
+export const protocols = mysqlTable("protocols", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  diseasesite: varchar("diseasesite", { length: 100 }).notNull(), // e.g., "Prostate", "Breast", "Lung"
+  stage: varchar("stage", { length: 100 }), // e.g., "Early Stage", "Locally Advanced", "Metastatic"
+  modality: varchar("modality", { length: 100 }).notNull(), // e.g., "IMRT", "SBRT", "Proton", "3D-CRT"
+  intent: mysqlEnum("intent", ["definitive", "adjuvant", "neoadjuvant", "palliative"]).notNull(),
+  totalDose: varchar("totalDose", { length: 50 }).notNull(), // e.g., "78 Gy"
+  fractions: int("fractions").notNull(),
+  dosePerFraction: varchar("dosePerFraction", { length: 50 }).notNull(), // e.g., "2 Gy"
+  targetVolume: text("targetVolume"), // Description of target volumes (GTV, CTV, PTV)
+  oarConstraints: text("oarConstraints"), // Organ at risk dose constraints
+  technique: text("technique"), // Treatment technique details
+  clinicalNotes: text("clinicalNotes"), // Additional clinical context
+  references: text("references"), // Citations (NCCN, ASTRO, trials)
+  isActive: int("isActive").default(1).notNull(),
+  createdBy: int("createdBy").notNull(), // User ID of creator
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Protocol = typeof protocols.$inferSelect;
+export type InsertProtocol = typeof protocols.$inferInsert;
+
+/**
+ * User favorites for protocols
+ */
+export const protocolFavorites = mysqlTable("protocolFavorites", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  protocolId: int("protocolId").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ProtocolFavorite = typeof protocolFavorites.$inferSelect;
+export type InsertProtocolFavorite = typeof protocolFavorites.$inferInsert;

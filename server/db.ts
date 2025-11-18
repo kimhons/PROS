@@ -1,6 +1,6 @@
 import { eq, desc, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, jobs, applications, contacts, InsertJob, InsertApplication, InsertContact } from "../drizzle/schema";
+import { InsertUser, users, jobs, applications, contacts, InsertJob, InsertApplication, InsertContact, protocols, protocolFavorites, InsertProtocol, InsertProtocolFavorite } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -233,4 +233,118 @@ export async function createNewsletterSubscriber(email: string, firstName?: stri
   });
   
   return result;
+}
+
+
+// ============================================================================
+// Protocol Library Functions
+// ============================================================================
+
+export async function getAllProtocols() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const result = await db
+    .select()
+    .from(protocols)
+    .where(eq(protocols.isActive, 1))
+    .orderBy(desc(protocols.createdAt));
+  
+  return result;
+}
+
+export async function getProtocolById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db
+    .select()
+    .from(protocols)
+    .where(and(eq(protocols.id, id), eq(protocols.isActive, 1)))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createProtocol(protocol: InsertProtocol) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.insert(protocols).values(protocol);
+}
+
+export async function updateProtocol(id: number, updates: Partial<InsertProtocol>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db
+    .update(protocols)
+    .set({ ...updates, updatedAt: new Date() })
+    .where(eq(protocols.id, id));
+}
+
+export async function deleteProtocol(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Soft delete
+  await db
+    .update(protocols)
+    .set({ isActive: 0 })
+    .where(eq(protocols.id, id));
+}
+
+export async function getUserFavoriteProtocols(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const result = await db
+    .select({
+      protocol: protocols,
+      favoriteId: protocolFavorites.id,
+    })
+    .from(protocolFavorites)
+    .innerJoin(protocols, eq(protocolFavorites.protocolId, protocols.id))
+    .where(and(
+      eq(protocolFavorites.userId, userId),
+      eq(protocols.isActive, 1)
+    ))
+    .orderBy(desc(protocolFavorites.createdAt));
+  
+  return result.map(r => ({ ...r.protocol, favoriteId: r.favoriteId }));
+}
+
+export async function addProtocolFavorite(userId: number, protocolId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.insert(protocolFavorites).values({ userId, protocolId });
+}
+
+export async function removeProtocolFavorite(userId: number, protocolId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db
+    .delete(protocolFavorites)
+    .where(and(
+      eq(protocolFavorites.userId, userId),
+      eq(protocolFavorites.protocolId, protocolId)
+    ));
+}
+
+export async function isProtocolFavorited(userId: number, protocolId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  
+  const result = await db
+    .select()
+    .from(protocolFavorites)
+    .where(and(
+      eq(protocolFavorites.userId, userId),
+      eq(protocolFavorites.protocolId, protocolId)
+    ))
+    .limit(1);
+  
+  return result.length > 0;
 }

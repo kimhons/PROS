@@ -203,6 +203,107 @@ export const appRouter = router({
       }),
   }),
 
+  protocols: router({
+    // Protected: Get all protocols
+    list: protectedProcedure.query(async () => {
+      return await db.getAllProtocols();
+    }),
+
+    // Protected: Get single protocol by ID
+    getById: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const protocol = await db.getProtocolById(input.id);
+        if (!protocol) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Protocol not found' });
+        }
+        return protocol;
+      }),
+
+    // Protected: Get user's favorite protocols
+    getFavorites: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getUserFavoriteProtocols(ctx.user.id);
+    }),
+
+    // Protected: Add protocol to favorites
+    addFavorite: protectedProcedure
+      .input(z.object({ protocolId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await db.addProtocolFavorite(ctx.user.id, input.protocolId);
+        return { success: true };
+      }),
+
+    // Protected: Remove protocol from favorites
+    removeFavorite: protectedProcedure
+      .input(z.object({ protocolId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await db.removeProtocolFavorite(ctx.user.id, input.protocolId);
+        return { success: true };
+      }),
+
+    // Protected: Check if protocol is favorited
+    isFavorited: protectedProcedure
+      .input(z.object({ protocolId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return await db.isProtocolFavorited(ctx.user.id, input.protocolId);
+      }),
+
+    // Admin: Create new protocol
+    create: adminProcedure
+      .input(z.object({
+        title: z.string(),
+        diseasesite: z.string(),
+        stage: z.string().optional(),
+        modality: z.string(),
+        intent: z.enum(["definitive", "adjuvant", "neoadjuvant", "palliative"]),
+        totalDose: z.string(),
+        fractions: z.number(),
+        dosePerFraction: z.string(),
+        targetVolume: z.string().optional(),
+        oarConstraints: z.string().optional(),
+        technique: z.string().optional(),
+        clinicalNotes: z.string().optional(),
+        references: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        await db.createProtocol({ ...input, createdBy: ctx.user.id });
+        return { success: true };
+      }),
+
+    // Admin: Update protocol
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        title: z.string().optional(),
+        diseasesite: z.string().optional(),
+        stage: z.string().optional(),
+        modality: z.string().optional(),
+        intent: z.enum(["definitive", "adjuvant", "neoadjuvant", "palliative"]).optional(),
+        totalDose: z.string().optional(),
+        fractions: z.number().optional(),
+        dosePerFraction: z.string().optional(),
+        targetVolume: z.string().optional(),
+        oarConstraints: z.string().optional(),
+        technique: z.string().optional(),
+        clinicalNotes: z.string().optional(),
+        references: z.string().optional(),
+        isActive: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...updates } = input;
+        await db.updateProtocol(id, updates);
+        return { success: true };
+      }),
+
+    // Admin: Delete protocol (soft delete)
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.deleteProtocol(input.id);
+        return { success: true };
+      }),
+  }),
+
   newsletter: router({
     // Public: Get all published newsletter issues
     listIssues: publicProcedure.query(async () => {

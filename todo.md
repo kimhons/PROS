@@ -63,3 +63,4 @@
 - [ ] Add app usage tracking for lead scoring
 - [x] Add PDF export feature to BED Calculator for clinical documentation
 - [x] Add standard fractionation schedule comparison feature to BED Calculator
+- [x] Build Protocol Library with searchable database, filters, and PDF export

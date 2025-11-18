@@ -40,7 +40,7 @@ export default function Tools() {
       description: "Searchable database of radiation oncology treatment protocols organized by disease site, stage, and modality.",
       icon: BookOpen,
       href: "/tools/protocol-library",
-      status: "coming-soon",
+      status: "available",
       features: [
         "Protocols by disease site and stage",
         "Evidence-based guidelines",
