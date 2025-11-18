@@ -16,6 +16,7 @@ import BEDCalculator from "./pages/BEDCalculator";
 import ProtocolLibrary from "./pages/ProtocolLibrary";
 import QAChecklistGenerator from "./pages/QAChecklistGenerator";
 import ResourceAggregator from "./pages/ResourceAggregator";
+import Contact from "./pages/Contact";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -33,6 +34,7 @@ function Router() {
       <Route path={"/tools/qa-checklist"} component={QAChecklistGenerator} />
       <Route path={"/tools/resources"} component={ResourceAggregator} />
       <Route path={"/careers"} component={Careers} />
+      <Route path={"/contact"} component={Contact} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
