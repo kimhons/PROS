@@ -61,3 +61,4 @@
 - [ ] Build Resource Aggregator with curated links and categories
 - [ ] Enhance user registration to capture credentials and organization
 - [ ] Add app usage tracking for lead scoring
+- [x] Add PDF export feature to BED Calculator for clinical documentation

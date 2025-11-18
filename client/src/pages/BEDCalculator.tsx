@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Zap, Lock, Calculator, TrendingUp, Info } from "lucide-react";
+import { Zap, Lock, Calculator, TrendingUp, Info, Download } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
@@ -57,6 +57,100 @@ export default function BEDCalculator() {
   const comparisonDosePerFraction = comparisonDose / comparisonFractions;
   const comparisonBed = comparisonFractions * comparisonDosePerFraction * (1 + comparisonDosePerFraction / alphaβ);
   const comparisonEqd2 = comparisonBed / (1 + 2 / alphaβ);
+
+  const exportToPDF = (includeComparison: boolean) => {
+    // Create PDF content
+    const pdfContent = `
+PRECISION RADIATION ONCOLOGY SOLUTIONS
+BED Calculator - Calculation Report
+${'='.repeat(60)}
+
+Generated: ${new Date().toLocaleString()}
+Calculated by: ${user?.name || 'User'}
+${user?.organization ? `Organization: ${user.organization}` : ''}
+
+${'='.repeat(60)}
+PRIMARY PRESCRIPTION
+${'='.repeat(60)}
+
+Tissue/Tumor Type: ${currentPreset.label}
+α/β Ratio: ${alphaβ} Gy
+
+Prescription Details:
+  Total Dose: ${totalDose} Gy
+  Number of Fractions: ${fractions}
+  Dose per Fraction: ${dosePerFraction.toFixed(2)} Gy
+
+Results:
+  Biologically Effective Dose (BED): ${bed.toFixed(2)} Gy
+  EQD2 (2 Gy Equivalent): ${eqd2.toFixed(2)} Gy
+  Equivalent Fractions: ~${Math.round(eqd2 / 2)} × 2 Gy
+
+${includeComparison ? `
+${'='.repeat(60)}
+COMPARISON REGIMEN
+${'='.repeat(60)}
+
+Prescription Details:
+  Total Dose: ${comparisonDose} Gy
+  Number of Fractions: ${comparisonFractions}
+  Dose per Fraction: ${comparisonDosePerFraction.toFixed(2)} Gy
+
+Results:
+  Biologically Effective Dose (BED): ${comparisonBed.toFixed(2)} Gy
+  EQD2 (2 Gy Equivalent): ${comparisonEqd2.toFixed(2)} Gy
+
+Biological Equivalence:
+  BED Difference: ${(bed - comparisonBed > 0 ? '+' : '')}${(bed - comparisonBed).toFixed(2)} Gy
+  EQD2 Difference: ${(eqd2 - comparisonEqd2 > 0 ? '+' : '')}${(eqd2 - comparisonEqd2).toFixed(2)} Gy
+  ${Math.abs(bed - comparisonBed) < 5 ? 'These regimens are biologically similar' : 'Significant biological difference between regimens'}
+` : ''}
+${'='.repeat(60)}
+CALCULATION METHODOLOGY
+${'='.repeat(60)}
+
+BED Formula: BED = n × d × (1 + d/(α/β))
+  where:
+    n = number of fractions
+    d = dose per fraction (Gy)
+    α/β = tissue-specific ratio (Gy)
+
+EQD2 Formula: EQD2 = BED / (1 + 2/(α/β))
+
+${'='.repeat(60)}
+CLINICAL NOTES
+${'='.repeat(60)}
+
+BED calculations are theoretical models based on the linear-quadratic
+formula. Clinical outcomes depend on many factors including:
+  • Tumor biology and heterogeneity
+  • Patient-specific factors
+  • Treatment technique and delivery
+  • Overall treatment time
+  • Concurrent therapies
+
+Always consult clinical guidelines, institutional protocols, and
+peer-reviewed literature when making treatment decisions.
+
+${'='.repeat(60)}
+
+This report was generated using the PROS BED Calculator.
+For more information, visit: https://pros-staffing.com
+
+© ${new Date().getFullYear()} Precision Radiation Oncology Solutions
+    `;
+
+    // Create blob and download
+    const blob = new Blob([pdfContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `BED_Calculation_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   if (loading) {
     return (
@@ -353,6 +447,15 @@ export default function BEDCalculator() {
                         <strong>EQD2:</strong> BED / (1 + 2/(α/β))
                       </p>
                     </div>
+
+                    <Button 
+                      onClick={() => exportToPDF(false)} 
+                      variant="outline" 
+                      className="w-full mt-4"
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Export to PDF
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -398,6 +501,15 @@ export default function BEDCalculator() {
                             : "⚠ Significant biological difference between regimens"}
                         </p>
                       </div>
+
+                      <Button 
+                        onClick={() => exportToPDF(true)} 
+                        variant="outline" 
+                        className="w-full mt-4"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Export with Comparison
+                      </Button>
                     </CardContent>
                   </Card>
                 )}
