@@ -65,3 +65,4 @@
 - [x] Add standard fractionation schedule comparison feature to BED Calculator
 - [x] Build Protocol Library with searchable database, filters, and PDF export
 - [x] Build QA Checklist Generator with TG-142, TG-51, and TG-100 templates
+- [x] Build Resource Aggregator with curated links to journals, conferences, guidelines, and professional development resources

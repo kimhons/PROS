@@ -66,7 +66,7 @@ export default function Tools() {
       description: "Curated collection of radiation oncology resources including journals, conferences, webinars, and professional development.",
       icon: LinkIcon,
       href: "/tools/resources",
-      status: "coming-soon",
+      status: "available",
       features: [
         "Peer-reviewed journals",
         "Upcoming conferences and webinars",
