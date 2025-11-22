@@ -240,3 +240,29 @@ export const qaChecklists = mysqlTable("qaChecklists", {
 
 export type QAChecklist = typeof qaChecklists.$inferSelect;
 export type InsertQAChecklist = typeof qaChecklists.$inferInsert;
+
+/**
+ * Blog posts for technical articles and thought leadership
+ */
+export const blogPosts = mysqlTable("blogPosts", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  excerpt: text("excerpt").notNull(),
+  content: text("content").notNull(), // Markdown content
+  category: varchar("category", { length: 100 }).notNull(), // e.g., "Staffing Solutions", "Quality Assurance", "Technology"
+  tags: text("tags"), // Comma-separated tags for filtering
+  authorId: int("authorId").notNull(),
+  authorName: varchar("authorName", { length: 200 }).notNull(),
+  authorCredentials: varchar("authorCredentials", { length: 200 }), // e.g., "PhD, DABR"
+  featuredImage: varchar("featuredImage", { length: 500 }),
+  readTime: int("readTime").notNull(), // Estimated reading time in minutes
+  viewCount: int("viewCount").default(0).notNull(),
+  isPublished: int("isPublished").default(1).notNull(),
+  publishedAt: timestamp("publishedAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertBlogPost = typeof blogPosts.$inferInsert;

@@ -43,6 +43,13 @@
       "when": 1763448900662,
       "tag": "0005_famous_hardball",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1763789140945,
+      "tag": "0006_lethal_tinkerer",
+      "breakpoints": true
     }
   ]
 }

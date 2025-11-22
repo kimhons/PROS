@@ -1,0 +1,21 @@
+CREATE TABLE `blogPosts` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`title` varchar(255) NOT NULL,
+	`slug` varchar(255) NOT NULL,
+	`excerpt` text NOT NULL,
+	`content` text NOT NULL,
+	`category` varchar(100) NOT NULL,
+	`tags` text,
+	`authorId` int NOT NULL,
+	`authorName` varchar(200) NOT NULL,
+	`authorCredentials` varchar(200),
+	`featuredImage` varchar(500),
+	`readTime` int NOT NULL,
+	`viewCount` int NOT NULL DEFAULT 0,
+	`isPublished` int NOT NULL DEFAULT 1,
+	`publishedAt` timestamp NOT NULL DEFAULT (now()),
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `blogPosts_id` PRIMARY KEY(`id`),
+	CONSTRAINT `blogPosts_slug_unique` UNIQUE(`slug`)
+);

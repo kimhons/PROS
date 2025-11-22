@@ -36,6 +36,9 @@ export default function Home() {
               <Link href="/tools">
                 <span className="hover:text-secondary transition-colors cursor-pointer">Tools</span>
               </Link>
+              <Link href="/blog">
+                <span className="hover:text-secondary transition-colors cursor-pointer">Blog</span>
+              </Link>
               <Link href="/careers">
                 <span className="hover:text-secondary transition-colors cursor-pointer">Careers</span>
               </Link>

@@ -19,6 +19,8 @@ import ResourceAggregator from "./pages/ResourceAggregator";
 import Contact from "./pages/Contact";
 import JobDetail from "./pages/JobDetail";
 import AdminDashboard from "./pages/admin/Dashboard";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -38,6 +40,8 @@ function Router() {
       <Route path={"/careers"} component={Careers} />
       <Route path={"/careers/:id"} component={JobDetail} />
       <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/blog"} component={Blog} />
+      <Route path={"/blog/:slug"} component={BlogPost} />
       <Route path={"/contact"} component={Contact} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

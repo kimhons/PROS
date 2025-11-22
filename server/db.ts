@@ -1,6 +1,6 @@
 import { eq, desc, and, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, jobs, applications, contacts, InsertJob, InsertApplication, InsertContact, protocols, protocolFavorites, InsertProtocol, InsertProtocolFavorite } from "../drizzle/schema";
+import { InsertUser, users, jobs, applications, contacts, InsertJob, InsertApplication, InsertContact, protocols, protocolFavorites, InsertProtocol, InsertProtocolFavorite, blogPosts, InsertBlogPost } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -396,4 +396,80 @@ export async function countNewsletterSubscribers(): Promise<number> {
     .where(eq(newsletterSubscribers.isActive, 1));
   
   return result[0]?.count ?? 0;
+}
+
+// ============================================================================
+// Blog Functions
+// ============================================================================
+
+export async function getAllPublishedBlogPosts() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(blogPosts)
+    .where(eq(blogPosts.isPublished, 1))
+    .orderBy(desc(blogPosts.publishedAt));
+}
+
+export async function getBlogPostBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(blogPosts)
+    .where(and(eq(blogPosts.slug, slug), eq(blogPosts.isPublished, 1)))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getBlogPostsByCategory(category: string) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(blogPosts)
+    .where(and(eq(blogPosts.category, category), eq(blogPosts.isPublished, 1)))
+    .orderBy(desc(blogPosts.publishedAt));
+}
+
+export async function searchBlogPosts(query: string) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const searchPattern = `%${query}%`;
+  return await db.select().from(blogPosts)
+    .where(and(
+      eq(blogPosts.isPublished, 1),
+      sql`(${blogPosts.title} LIKE ${searchPattern} OR ${blogPosts.excerpt} LIKE ${searchPattern} OR ${blogPosts.tags} LIKE ${searchPattern})`
+    ))
+    .orderBy(desc(blogPosts.publishedAt));
+}
+
+export async function createBlogPost(post: InsertBlogPost) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.insert(blogPosts).values(post);
+}
+
+export async function incrementBlogPostViews(slug: string) {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.update(blogPosts)
+    .set({ viewCount: sql`${blogPosts.viewCount} + 1` })
+    .where(eq(blogPosts.slug, slug));
+}
+
+export async function getRelatedBlogPosts(currentSlug: string, category: string, limit: number = 3) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(blogPosts)
+    .where(and(
+      eq(blogPosts.category, category),
+      eq(blogPosts.isPublished, 1),
+      sql`${blogPosts.slug} != ${currentSlug}`
+    ))
+    .orderBy(desc(blogPosts.publishedAt))
+    .limit(limit);
 }

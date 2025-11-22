@@ -73,3 +73,9 @@
 - [ ] Build AI chat assistant widget for website navigation and support
 - [x] Implement AI resume analysis and job matching
 - [x] Add AI-assisted content generation for admin dashboard
+- [x] Research 20 pain points in radiation oncology
+- [x] Design blog system with database schema for articles, categories, and tags
+- [ ] Create 20 technically detailed, actionable blog articles as lead magnets
+- [x] Build blog listing page with search and filtering
+- [x] Build individual blog article pages with related content suggestions
+- [x] Add blog section to main navigation

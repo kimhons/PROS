@@ -410,6 +410,68 @@ export const appRouter = router({
         return await ai.chatAssistant(input.message, input.history);
       }),
   }),
+
+  // Blog
+  blog: router({
+    // Public: Get all published blog posts
+    list: publicProcedure.query(async () => {
+      return await db.getAllPublishedBlogPosts();
+    }),
+
+    // Public: Get blog post by slug
+    getBySlug: publicProcedure
+      .input(z.object({ slug: z.string() }))
+      .query(async ({ input }) => {
+        const post = await db.getBlogPostBySlug(input.slug);
+        if (!post) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Blog post not found' });
+        }
+        // Increment view count
+        await db.incrementBlogPostViews(input.slug);
+        return post;
+      }),
+
+    // Public: Get blog posts by category
+    getByCategory: publicProcedure
+      .input(z.object({ category: z.string() }))
+      .query(async ({ input }) => {
+        return await db.getBlogPostsByCategory(input.category);
+      }),
+
+    // Public: Search blog posts
+    search: publicProcedure
+      .input(z.object({ query: z.string() }))
+      .query(async ({ input }) => {
+        return await db.searchBlogPosts(input.query);
+      }),
+
+    // Public: Get related posts
+    getRelated: publicProcedure
+      .input(z.object({ slug: z.string(), category: z.string(), limit: z.number().optional() }))
+      .query(async ({ input }) => {
+        return await db.getRelatedBlogPosts(input.slug, input.category, input.limit);
+      }),
+
+    // Admin: Create blog post
+    create: adminProcedure
+      .input(z.object({
+        title: z.string(),
+        slug: z.string(),
+        excerpt: z.string(),
+        content: z.string(),
+        category: z.string(),
+        tags: z.string().optional(),
+        authorName: z.string(),
+        authorCredentials: z.string().optional(),
+        featuredImage: z.string().optional(),
+        readTime: z.number(),
+        isPublished: z.number().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        await db.createBlogPost({ ...input, authorId: ctx.user.id });
+        return { success: true };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;
