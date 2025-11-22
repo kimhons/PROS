@@ -79,3 +79,7 @@
 - [x] Build blog listing page with search and filtering
 - [x] Build individual blog article pages with related content suggestions
 - [x] Add blog section to main navigation
+- [ ] Generate 5 sample articles (3500+ words each) using multi-section approach with publication-quality standards
+- [ ] Review sample articles and generate remaining 15 articles after approval
+- [x] Enhance blog post template with publication-quality formatting (citations, tables, formulas)
+- [ ] Regenerate 5 articles in magazine format (Practical Radiation Oncology style) with verified claims, engaging storytelling, practical focus, and proper equation formatting
