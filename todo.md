@@ -83,3 +83,19 @@
 - [ ] Review sample articles and generate remaining 15 articles after approval
 - [x] Enhance blog post template with publication-quality formatting (citations, tables, formulas)
 - [ ] Regenerate 5 articles in magazine format (Practical Radiation Oncology style) with verified claims, engaging storytelling, practical focus, and proper equation formatting
+
+## Deployment & Documentation
+- [x] Create comprehensive README.md with project overview
+- [x] Create detailed DEPLOYMENT.md guide with Vercel instructions
+- [x] Create QUICKSTART.md for rapid deployment
+- [x] Create ENV_TEMPLATE.md with environment variable reference
+- [x] Configure vercel.json for production deployment
+- [x] Organize project documentation in docs/ folder
+- [ ] Deploy to Vercel via Management UI Publish button
+- [ ] Configure custom domain (prosradiationoncology.com)
+- [ ] Add Mailgun credentials for email notifications
+- [ ] Populate 3-5 sample job postings
+- [ ] Add 10-15 treatment protocols to Protocol Library
+- [ ] Publish 5 comprehensive blog articles (5,000+ words each)
+- [ ] Create first newsletter issue
+- [ ] Test all features in production environment
