@@ -8,7 +8,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { NotificationPanel } from "./NotificationPanel";
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 
 /**
@@ -17,9 +17,13 @@ import { toast } from "sonner";
  * Displays a bell icon with badge showing unread notification count.
  * Opens a popover panel with notification history when clicked.
  * Polls for new notifications and shows toast alerts.
+ * Animates bell when new notifications arrive.
  */
 export function NotificationBell() {
   const utils = trpc.useUtils();
+  const [isAnimating, setIsAnimating] = useState(false);
+  const previousUnreadCount = useRef(0);
+  const animationTimeout = useRef<NodeJS.Timeout | null>(null);
   
   // Get unread count
   const { data: unreadCount = 0 } = trpc.notifications.unreadCount.useQuery(undefined, {
@@ -39,6 +43,32 @@ export function NotificationBell() {
     },
   });
 
+  // Trigger animation when new notifications arrive
+  useEffect(() => {
+    if (unreadCount > previousUnreadCount.current && unreadCount > 0) {
+      // New notification arrived, trigger animation
+      setIsAnimating(true);
+      
+      // Clear existing timeout if any
+      if (animationTimeout.current) {
+        clearTimeout(animationTimeout.current);
+      }
+      
+      // Stop animation after 3 seconds
+      animationTimeout.current = setTimeout(() => {
+        setIsAnimating(false);
+      }, 3000);
+    }
+    
+    previousUnreadCount.current = unreadCount;
+    
+    return () => {
+      if (animationTimeout.current) {
+        clearTimeout(animationTimeout.current);
+      }
+    };
+  }, [unreadCount]);
+
   // Show toast for new notifications
   useEffect(() => {
     if (notifications.length > 0) {
@@ -56,15 +86,34 @@ export function NotificationBell() {
     }
   }, [notifications]);
 
+  const handleBellClick = () => {
+    // Stop animation when user clicks the bell
+    setIsAnimating(false);
+    if (animationTimeout.current) {
+      clearTimeout(animationTimeout.current);
+    }
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="relative"
+          onClick={handleBellClick}
+        >
+          <Bell 
+            className={`h-5 w-5 transition-transform ${
+              isAnimating ? 'animate-bell-ring' : ''
+            }`}
+          />
           {unreadCount > 0 && (
             <Badge 
               variant="destructive" 
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+              className={`absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs ${
+                isAnimating ? 'animate-pulse-badge' : ''
+              }`}
             >
               {unreadCount > 9 ? '9+' : unreadCount}
             </Badge>
