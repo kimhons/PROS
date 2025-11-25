@@ -228,8 +228,8 @@
   - [x] Insert protocols into database
 
 ## GitHub & Vercel Deployment
-- [ ] Commit all changes to GitHub
-- [ ] Push to main branch
+- [x] Commit all changes to GitHub
+- [x] Push to main branch (https://github.com/kimhons/PROS)
 - [ ] Deploy to Vercel
 - [ ] Configure environment variables in Vercel
 - [ ] Verify deployment
