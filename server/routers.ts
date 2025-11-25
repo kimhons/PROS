@@ -6,6 +6,7 @@ import { z } from "zod";
 import * as db from "./db";
 import { storagePut } from "./storage";
 import * as ai from "./_core/ai";
+import { notifyNewApplication, notifyNewContact } from "./notificationService";
 import { TRPCError } from "@trpc/server";
 
 // Admin-only procedure
@@ -142,6 +143,22 @@ export const appRouter = router({
           certifications: input.certifications,
         });
 
+        // Get job details for notification
+        const job = await db.getJobById(input.jobId);
+        
+        // Get all admin users to notify
+        const adminUsers = await db.getAdminUsers();
+        
+        // Send notification to all admins
+        for (const admin of adminUsers) {
+          await notifyNewApplication(
+            admin.id,
+            input.jobId, // Using jobId as relatedId since we don't have the application ID
+            `${input.firstName} ${input.lastName}`,
+            job?.title || 'Unknown Position'
+          );
+        }
+
         return { success: true };
       }),
 
@@ -184,6 +201,20 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         await db.createContact(input);
+        
+        // Get all admin users to notify
+        const adminUsers = await db.getAdminUsers();
+        
+        // Send notification to all admins
+        for (const admin of adminUsers) {
+          await notifyNewContact(
+            admin.id,
+            0, // We don't have the contact ID, using 0 as placeholder
+            input.name,
+            input.inquiryType
+          );
+        }
+        
         return { success: true };
       }),
 
@@ -408,6 +439,41 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         return await ai.chatAssistant(input.message, input.history);
+      }),
+  }),
+
+  // Notifications
+  notifications: router({
+    // Get notifications for current user
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getNotificationsForUser(ctx.user.id);
+    }),
+
+    // Get unread count
+    unreadCount: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getUnreadNotificationCount(ctx.user.id);
+    }),
+
+    // Mark notification as read
+    markAsRead: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.markNotificationAsRead(input.id);
+        return { success: true };
+      }),
+
+    // Mark all as read
+    markAllAsRead: protectedProcedure.mutation(async ({ ctx }) => {
+      await db.markAllNotificationsAsRead(ctx.user.id);
+      return { success: true };
+    }),
+
+    // Delete notification
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.deleteNotification(input.id);
+        return { success: true };
       }),
   }),
 

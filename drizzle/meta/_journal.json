@@ -50,6 +50,13 @@
       "when": 1763789140945,
       "tag": "0006_lethal_tinkerer",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1764081449722,
+      "tag": "0007_lumpy_senator_kelly",
+      "breakpoints": true
     }
   ]
 }
