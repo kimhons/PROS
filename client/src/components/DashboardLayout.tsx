@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users, Briefcase, FileText, Mail } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, Briefcase, FileText, Mail, BookOpen } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -34,6 +34,7 @@ const menuItems = [
   { icon: FileText, label: "Applications", path: "/admin/applications" },
   { icon: Mail, label: "Contacts", path: "/admin/contacts" },
   { icon: Users, label: "Subscribers", path: "/admin/subscribers" },
+  { icon: BookOpen, label: "Blog", path: "/admin/blog" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";

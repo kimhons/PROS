@@ -16,7 +16,8 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { ArrowLeft, Save, Eye } from "lucide-react";
+import { ArrowLeft, Save, Eye, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function BlogEditor() {
   const [, params] = useRoute("/admin/blog/edit/:id");
@@ -35,8 +36,13 @@ export default function BlogEditor() {
   const [featuredImage, setFeaturedImage] = useState("");
   const [isPublished, setIsPublished] = useState(0);
   const [imageUploadOpen, setImageUploadOpen] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [hasDraft, setHasDraft] = useState(false);
 
   const utils = trpc.useUtils();
+
+  // Auto-save key for localStorage
+  const draftKey = `blog-draft-${isEditing ? postId : 'new'}`;
 
   // Fetch post data if editing
   const { data: existingPost, isLoading: loadingPost } = trpc.blog.getById.useQuery(
@@ -44,6 +50,21 @@ export default function BlogEditor() {
     { enabled: isEditing && !!postId }
   );
 
+  // Check for saved draft on mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem(draftKey);
+    if (savedDraft && !isEditing) {
+      try {
+        const draft = JSON.parse(savedDraft);
+        setHasDraft(true);
+        // Don't auto-load, let user decide
+      } catch (e) {
+        localStorage.removeItem(draftKey);
+      }
+    }
+  }, [draftKey, isEditing]);
+
+  // Load existing post data
   useEffect(() => {
     if (existingPost) {
       setTitle(existingPost.title);
@@ -59,8 +80,33 @@ export default function BlogEditor() {
     }
   }, [existingPost]);
 
+  // Auto-save to localStorage every 30 seconds
+  useEffect(() => {
+    const autoSaveInterval = setInterval(() => {
+      if (title || content) {
+        const draft = {
+          title,
+          slug,
+          excerpt,
+          content,
+          category,
+          tags,
+          authorName,
+          authorCredentials,
+          featuredImage,
+          savedAt: new Date().toISOString(),
+        };
+        localStorage.setItem(draftKey, JSON.stringify(draft));
+        setLastSaved(new Date());
+      }
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(autoSaveInterval);
+  }, [title, slug, excerpt, content, category, tags, authorName, authorCredentials, featuredImage, draftKey]);
+
   const createPost = trpc.blog.create.useMutation({
     onSuccess: () => {
+      localStorage.removeItem(draftKey); // Clear draft after successful creation
       toast.success("Blog post created successfully");
       utils.admin.getAllBlogPosts.invalidate();
       setLocation("/admin/blog");
@@ -72,6 +118,7 @@ export default function BlogEditor() {
 
   const updatePost = trpc.blog.update.useMutation({
     onSuccess: () => {
+      localStorage.removeItem(draftKey); // Clear draft after successful update
       toast.success("Blog post updated successfully");
       utils.admin.getAllBlogPosts.invalidate();
       setLocation("/admin/blog");
@@ -118,6 +165,35 @@ export default function BlogEditor() {
 
   const handleImageUploadClick = () => {
     setImageUploadOpen(true);
+  };
+
+  const restoreDraft = () => {
+    const savedDraft = localStorage.getItem(draftKey);
+    if (savedDraft) {
+      try {
+        const draft = JSON.parse(savedDraft);
+        setTitle(draft.title || "");
+        setSlug(draft.slug || "");
+        setExcerpt(draft.excerpt || "");
+        setContent(draft.content || "");
+        setCategory(draft.category || "clinical-practice");
+        setTags(draft.tags || "");
+        setAuthorName(draft.authorName || "");
+        setAuthorCredentials(draft.authorCredentials || "");
+        setFeaturedImage(draft.featuredImage || "");
+        setHasDraft(false);
+        toast.success("Draft restored");
+      } catch (e) {
+        toast.error("Failed to restore draft");
+        localStorage.removeItem(draftKey);
+      }
+    }
+  };
+
+  const discardDraft = () => {
+    localStorage.removeItem(draftKey);
+    setHasDraft(false);
+    toast.info("Draft discarded");
   };
 
   const handleSave = (publish: boolean = false) => {
@@ -182,6 +258,22 @@ export default function BlogEditor() {
   return (
     <DashboardLayout>
       <div className="space-y-6 max-w-5xl">
+        {hasDraft && (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="flex items-center justify-between">
+              <span>You have an unsaved draft. Would you like to restore it?</span>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={restoreDraft}>
+                  Restore
+                </Button>
+                <Button size="sm" variant="ghost" onClick={discardDraft}>
+                  Discard
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
@@ -197,6 +289,11 @@ export default function BlogEditor() {
               </h1>
               <p className="text-muted-foreground">
                 {isEditing ? "Update your blog post" : "Write and publish a new article"}
+                {lastSaved && (
+                  <span className="text-xs text-muted-foreground ml-4">
+                    • Auto-saved {new Date(lastSaved).toLocaleTimeString()}
+                  </span>
+                )}
               </p>
             </div>
           </div>

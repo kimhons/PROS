@@ -198,3 +198,22 @@
 - [x] Add tRPC procedures for getById, create, update, uploadImage
 - [ ] Test editor with actual blog post creation and editing
 - [ ] Add auto-save draft functionality (optional enhancement)
+
+## Approved Enhancements
+- [x] Update DashboardLayout sidebar with navigation links to all admin pages
+  - [x] Add Jobs management link
+  - [x] Add Applications link
+  - [x] Add Contacts link
+  - [x] Add Subscribers link
+  - [x] Add Blog management link
+- [x] Implement auto-save functionality in blog editor
+  - [x] Add periodic auto-save (every 30 seconds)
+  - [x] Store drafts in localStorage
+  - [x] Add "restore draft" prompt when opening editor
+  - [x] Clear saved draft after successful publish
+  - [x] Add auto-save timestamp indicator
+  - [x] Add discard draft option
+- [x] Create three sample blog posts on radiation oncology topics
+  - [x] Post 1: Optimizing SBRT Treatment Planning for Lung Cancer
+  - [x] Post 2: Implementing PSQA Workflows Best Practices
+  - [x] Post 3: Future of Adaptive Radiation Therapy with AI/ML
