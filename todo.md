@@ -226,3 +226,10 @@
   - [x] SBRT protocols (Lung peripheral/central, Liver, Spine, Pancreas)
   - [x] Include technical specifications and dose constraints
   - [x] Insert protocols into database
+
+## GitHub & Vercel Deployment
+- [ ] Commit all changes to GitHub
+- [ ] Push to main branch
+- [ ] Deploy to Vercel
+- [ ] Configure environment variables in Vercel
+- [ ] Verify deployment
