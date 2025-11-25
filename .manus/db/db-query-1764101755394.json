@@ -1,0 +1,26 @@
+{
+  "query": "SELECT COUNT(*) as total, modality FROM protocols GROUP BY modality",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 345pWMaQPV1VyKp.5c2d3a564afb --database H7NKxTnRHVSBYRhL64LnAp --execute SELECT COUNT(*) as total, modality FROM protocols GROUP BY modality",
+  "rows": [
+    {
+      "total": "2",
+      "modality": "VMAT"
+    },
+    {
+      "total": "5",
+      "modality": "SBRT"
+    },
+    {
+      "total": "2",
+      "modality": "SRS"
+    },
+    {
+      "total": "3",
+      "modality": "IMRT"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\tmodality\n2\tVMAT\n5\tSBRT\n2\tSRS\n3\tIMRT\n",
+  "stderr": "",
+  "execution_time_ms": 72
+}

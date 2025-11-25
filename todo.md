@@ -217,3 +217,12 @@
   - [x] Post 1: Optimizing SBRT Treatment Planning for Lung Cancer
   - [x] Post 2: Implementing PSQA Workflows Best Practices
   - [x] Post 3: Future of Adaptive Radiation Therapy with AI/ML
+
+## Protocol Library Population
+- [x] Create 12 sample treatment protocols
+  - [x] IMRT protocols (Head & Neck, Prostate, Breast)
+  - [x] VMAT protocols (Esophagus, Rectum)
+  - [x] SRS protocols (Brain single/multiple metastases)
+  - [x] SBRT protocols (Lung peripheral/central, Liver, Spine, Pancreas)
+  - [x] Include technical specifications and dose constraints
+  - [x] Insert protocols into database
