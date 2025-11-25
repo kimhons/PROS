@@ -489,6 +489,17 @@ export async function getRelatedBlogPosts(currentSlug: string, category: string,
     .limit(limit);
 }
 
+export async function getBlogPostById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(blogPosts)
+    .where(eq(blogPosts.id, id))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
+}
+
 export async function getAllBlogPosts() {
   const db = await getDb();
   if (!db) return [];

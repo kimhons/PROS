@@ -543,6 +543,17 @@ export const appRouter = router({
         return await db.getRelatedBlogPosts(input.slug, input.category, input.limit);
       }),
 
+    // Admin: Get blog post by ID
+    getById: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const post = await db.getBlogPostById(input.id);
+        if (!post) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Blog post not found' });
+        }
+        return post;
+      }),
+
     // Admin: Create blog post
     create: adminProcedure
       .input(z.object({
@@ -563,6 +574,28 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    // Admin: Update blog post
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        title: z.string().optional(),
+        slug: z.string().optional(),
+        excerpt: z.string().optional(),
+        content: z.string().optional(),
+        category: z.string().optional(),
+        tags: z.string().optional(),
+        authorName: z.string().optional(),
+        authorCredentials: z.string().optional(),
+        featuredImage: z.string().optional(),
+        readTime: z.number().optional(),
+        isPublished: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...updates } = input;
+        await db.updateBlogPost(id, updates);
+        return { success: true };
+      }),
+
     // Admin: Update blog post status
     updateStatus: adminProcedure
       .input(z.object({
@@ -580,6 +613,30 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await db.deleteBlogPost(input.id);
         return { success: true };
+      }),
+
+    // Admin: Upload blog image
+    uploadImage: adminProcedure
+      .input(z.object({
+        imageData: z.string(), // base64 encoded image
+        fileName: z.string(),
+        mimeType: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        // Convert base64 to buffer
+        const base64Data = input.imageData.split(',')[1] || input.imageData;
+        const buffer = Buffer.from(base64Data, 'base64');
+        
+        // Generate unique filename
+        const timestamp = Date.now();
+        const randomStr = Math.random().toString(36).substring(7);
+        const ext = input.fileName.split('.').pop() || 'jpg';
+        const fileKey = `blog-images/${timestamp}-${randomStr}.${ext}`;
+        
+        // Upload to S3
+        const { url } = await storagePut(fileKey, buffer, input.mimeType);
+        
+        return { url };
       }),
   }),
 });

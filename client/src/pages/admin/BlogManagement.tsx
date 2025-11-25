@@ -91,7 +91,7 @@ export default function AdminBlogManagement() {
               Create and manage blog posts
             </p>
           </div>
-          <Button onClick={() => toast.info("Blog post creation coming soon")}>
+          <Button onClick={() => setLocation("/admin/blog/new")}>
             <Plus className="h-4 w-4 mr-2" />
             Create Post
           </Button>
@@ -200,7 +200,7 @@ export default function AdminBlogManagement() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => toast.info("Edit functionality coming soon")}
+                              onClick={() => setLocation(`/admin/blog/edit/${post.id}`)}
                               title="Edit"
                             >
                               <Pencil className="h-4 w-4" />

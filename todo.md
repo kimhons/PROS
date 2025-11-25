@@ -180,3 +180,21 @@
   - [x] Preview posts before publishing
 - [x] Register all admin routes in App.tsx
 - [ ] Update DashboardLayout sidebar navigation with admin pages
+
+## Rich Text Blog Editor
+- [x] Install markdown editor packages (react-markdown, remark-gfm)
+- [x] Create MarkdownEditor component with toolbar
+- [x] Add markdown formatting buttons (headings, bold, italic, lists, links, code)
+- [x] Implement live preview panel with split-screen layout
+- [x] Build image upload component with drag-and-drop
+- [x] Integrate S3 image upload for blog post images
+- [x] Create blog post creation page (/admin/blog/new)
+- [x] Create blog post editing page (/admin/blog/edit/:id)
+- [x] Implement slug auto-generation from title
+- [x] Add category and tags input fields
+- [x] Add publish/draft save options
+- [x] Add form validation and error handling
+- [x] Update BlogManagement page with "Create Post" and "Edit" buttons
+- [x] Add tRPC procedures for getById, create, update, uploadImage
+- [ ] Test editor with actual blog post creation and editing
+- [ ] Add auto-save draft functionality (optional enhancement)

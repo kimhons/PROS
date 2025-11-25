@@ -24,6 +24,7 @@ import AdminApplications from "./pages/admin/Applications";
 import AdminContacts from "./pages/admin/Contacts";
 import AdminSubscribers from "./pages/admin/Subscribers";
 import AdminBlogManagement from "./pages/admin/BlogManagement";
+import AdminBlogEditor from "./pages/admin/BlogEditor";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 
@@ -50,6 +51,8 @@ function Router() {
       <Route path={"/admin/contacts"} component={AdminContacts} />
       <Route path={"/admin/subscribers"} component={AdminSubscribers} />
       <Route path={"/admin/blog"} component={AdminBlogManagement} />
+      <Route path={"/admin/blog/new"} component={AdminBlogEditor} />
+      <Route path={"/admin/blog/edit/:id"} component={AdminBlogEditor} />
       <Route path={"/blog"} component={Blog} />
       <Route path={"/blog/:slug"} component={BlogPost} />
       <Route path={"/contact"} component={Contact} />
