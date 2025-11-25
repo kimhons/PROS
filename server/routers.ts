@@ -376,6 +376,31 @@ export const appRouter = router({
   }),
 
   admin: router({
+    // Get all jobs (including inactive)
+    getAllJobs: adminProcedure.query(async () => {
+      return await db.getAllJobs();
+    }),
+
+    // Get all applications
+    getAllApplications: adminProcedure.query(async () => {
+      return await db.getAllApplications();
+    }),
+
+    // Get all contacts
+    getAllContacts: adminProcedure.query(async () => {
+      return await db.getAllContacts();
+    }),
+
+    // Get all newsletter subscribers
+    getAllSubscribers: adminProcedure.query(async () => {
+      return await db.getAllNewsletterSubscribers();
+    }),
+
+    // Get all blog posts (including unpublished)
+    getAllBlogPosts: adminProcedure.query(async () => {
+      return await db.getAllBlogPosts();
+    }),
+
     // Get dashboard statistics
     getStats: adminProcedure.query(async () => {
       const activeJobs = await db.countActiveJobs();
@@ -535,6 +560,25 @@ export const appRouter = router({
       }))
       .mutation(async ({ ctx, input }) => {
         await db.createBlogPost({ ...input, authorId: ctx.user.id });
+        return { success: true };
+      }),
+
+    // Admin: Update blog post status
+    updateStatus: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        isPublished: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        await db.updateBlogPost(input.id, { isPublished: input.isPublished });
+        return { success: true };
+      }),
+
+    // Admin: Delete blog post
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.deleteBlogPost(input.id);
         return { success: true };
       }),
   }),

@@ -97,6 +97,13 @@ export async function getAllActiveJobs() {
   return await db.select().from(jobs).where(eq(jobs.isActive, 1)).orderBy(desc(jobs.postedDate));
 }
 
+export async function getAllJobs() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(jobs).orderBy(desc(jobs.postedDate));
+}
+
 export async function getJobById(id: number) {
   const db = await getDb();
   if (!db) return undefined;
@@ -233,6 +240,14 @@ export async function createNewsletterSubscriber(email: string, firstName?: stri
   });
   
   return result;
+}
+
+export async function getAllNewsletterSubscribers() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const { newsletterSubscribers } = await import("../drizzle/schema");
+  return await db.select().from(newsletterSubscribers).orderBy(desc(newsletterSubscribers.subscribedAt));
 }
 
 
@@ -472,6 +487,28 @@ export async function getRelatedBlogPosts(currentSlug: string, category: string,
     ))
     .orderBy(desc(blogPosts.publishedAt))
     .limit(limit);
+}
+
+export async function getAllBlogPosts() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(blogPosts)
+    .orderBy(desc(blogPosts.publishedAt));
+}
+
+export async function updateBlogPost(id: number, updates: Partial<InsertBlogPost>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(blogPosts).set(updates).where(eq(blogPosts.id, id));
+}
+
+export async function deleteBlogPost(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.delete(blogPosts).where(eq(blogPosts.id, id));
 }
 
 // ============================================================================

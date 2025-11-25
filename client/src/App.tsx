@@ -19,6 +19,11 @@ import ResourceAggregator from "./pages/ResourceAggregator";
 import Contact from "./pages/Contact";
 import JobDetail from "./pages/JobDetail";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminJobs from "./pages/admin/Jobs";
+import AdminApplications from "./pages/admin/Applications";
+import AdminContacts from "./pages/admin/Contacts";
+import AdminSubscribers from "./pages/admin/Subscribers";
+import AdminBlogManagement from "./pages/admin/BlogManagement";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 
@@ -40,6 +45,11 @@ function Router() {
       <Route path={"/careers"} component={Careers} />
       <Route path={"/careers/:id"} component={JobDetail} />
       <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/admin/jobs"} component={AdminJobs} />
+      <Route path={"/admin/applications"} component={AdminApplications} />
+      <Route path={"/admin/contacts"} component={AdminContacts} />
+      <Route path={"/admin/subscribers"} component={AdminSubscribers} />
+      <Route path={"/admin/blog"} component={AdminBlogManagement} />
       <Route path={"/blog"} component={Blog} />
       <Route path={"/blog/:slug"} component={BlogPost} />
       <Route path={"/contact"} component={Contact} />

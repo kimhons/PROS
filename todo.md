@@ -121,3 +121,62 @@
 - [x] Implement animation trigger when new notifications arrive
 - [x] Auto-stop animation after 3 seconds
 - [x] Stop animation when user clicks the bell
+
+## Daily Notification Digest Email
+- [ ] Create HTML email template for notification digest
+- [ ] Implement digest generation logic (group notifications by type)
+- [ ] Add email sending function using existing email service
+- [ ] Create scheduled task to send digest daily at 8 AM
+- [ ] Add admin preferences table for digest settings
+- [ ] Add UI for admins to configure digest preferences (enable/disable, time)
+- [ ] Only send digest if there are unread notifications
+- [ ] Include direct links to notifications in email
+- [ ] Test digest email delivery
+
+## Public Job Board
+- [ ] Create job listings page (/careers)
+- [ ] Build job card component with key details
+- [ ] Add search functionality for job titles and descriptions
+- [ ] Implement filter sidebar (department, location, employment type, clearance)
+- [ ] Create individual job detail page (/careers/[id])
+- [ ] Build application form component with resume upload
+- [ ] Add form validation and error handling
+- [ ] Implement application submission with file upload to S3
+- [ ] Add success confirmation page/modal after application
+- [ ] Make job board responsive for mobile devices
+- [ ] Add "no results" state for empty searches
+- [ ] Add loading states for job fetching
+
+## Admin Dashboard Pages
+- [x] Build Jobs Management page (/admin/jobs)
+  - [x] Job listing table with search and filters
+  - [x] Create new job form
+  - [x] Edit existing job form
+  - [x] Activate/deactivate jobs
+  - [x] Delete jobs
+- [x] Build Applications Review page (/admin/applications)
+  - [x] Application listing table with filters
+  - [x] View application details
+  - [x] Download resumes
+  - [x] Update application status
+  - [x] Search by applicant name or job title
+- [x] Build Contacts Management page (/admin/contacts)
+  - [x] Contact inquiry listing table
+  - [x] Filter by inquiry type and status
+  - [x] View contact details
+  - [x] Update contact status (new/contacted/resolved)
+  - [ ] AI-assisted response generation
+- [x] Build Subscribers Management page (/admin/subscribers)
+  - [x] Subscriber listing table
+  - [x] Filter by status (active/unsubscribed)
+  - [x] Export subscriber list to CSV
+  - [x] View subscription date and source
+- [x] Build Blog Management page (/admin/blog)
+  - [x] Blog post listing table
+  - [ ] Create new blog post form
+  - [ ] Edit existing blog posts
+  - [x] Publish/unpublish posts
+  - [x] Delete posts
+  - [x] Preview posts before publishing
+- [x] Register all admin routes in App.tsx
+- [ ] Update DashboardLayout sidebar navigation with admin pages
