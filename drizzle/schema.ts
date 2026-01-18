@@ -23,6 +23,14 @@ export const users = mysqlTable("users", {
   credentials: varchar("credentials", { length: 200 }), // e.g., "ABR, DABR, MS"
   specialty: varchar("specialty", { length: 100 }), // e.g., "Medical Physics", "Radiation Therapy"
   yearsExperience: int("yearsExperience"),
+  // Email preferences for weekly job digest
+  weeklyDigestEnabled: int("weeklyDigestEnabled").default(1).notNull(), // 1 = enabled, 0 = disabled
+  minMatchScore: int("minMatchScore").default(70).notNull(), // Minimum match score (0-100) to include jobs in digest
+  // Candidate profile for job matching
+  desiredLocations: text("desiredLocations"), // JSON array of preferred locations
+  desiredDepartments: text("desiredDepartments"), // JSON array of preferred departments
+  desiredEmploymentTypes: text("desiredEmploymentTypes"), // JSON array of preferred employment types
+  clearanceLevel: varchar("clearanceLevel", { length: 50 }), // Current clearance level
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -284,3 +292,21 @@ export const notifications = mysqlTable("notifications", {
 
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
+
+/**
+ * Notification log for tracking sent emails
+ */
+export const notificationLog = mysqlTable("notificationLog", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // Recipient user ID
+  type: mysqlEnum("type", ["weekly-digest", "application-confirmation", "admin-alert", "newsletter"]).notNull(),
+  subject: varchar("subject", { length: 500 }).notNull(),
+  recipientEmail: varchar("recipientEmail", { length: 320 }).notNull(),
+  status: mysqlEnum("status", ["sent", "failed", "bounced"]).default("sent").notNull(),
+  errorMessage: text("errorMessage"), // Error details if failed
+  metadata: text("metadata"), // JSON with additional context (e.g., job IDs included)
+  sentAt: timestamp("sentAt").defaultNow().notNull(),
+});
+
+export type NotificationLog = typeof notificationLog.$inferSelect;
+export type InsertNotificationLog = typeof notificationLog.$inferInsert;
